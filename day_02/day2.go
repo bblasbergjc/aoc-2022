@@ -22,7 +22,7 @@ var pointsMap = map[string]int{
 }
 
 /*    X Y Z
- *	A 3 0 6
+ *  A 3 0 6
  *  B 6 3 0
  *  C 0 6 3
  */
