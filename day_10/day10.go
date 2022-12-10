@@ -23,8 +23,8 @@ func readSignalStrength(x, strengthCheckCycle, totalSignalStrengths int) (int, i
 func partOne(lines []string) int {
 	x := 1
 	cycle := 1
-	strengthCheckCycle := 20
-	totalSignalStrengths := 0
+	strengthCheckCycle := 20  // the cycle we will check the signal strength at
+	totalSignalStrengths := 0 // the sum of all our signal strength checks
 	for _, line := range lines {
 		if line == "noop" {
 			cycle += 1
@@ -52,6 +52,48 @@ func partOne(lines []string) int {
 	return totalSignalStrengths
 }
 
+func draw(x, cycle int) string {
+	position := (cycle - 1) % 40
+
+	ret := ""
+	if x-1 == position || x == position || x+1 == position {
+		ret += "#"
+	} else {
+		ret += "."
+	}
+
+	if cycle > 1 && cycle%40 == 0 { // this was the final position on this row
+		ret += "\n"
+	}
+
+	return ret
+}
+
+func partTwo(lines []string) {
+	x := 1
+	cycle := 1
+	screen := ""
+	for _, line := range lines {
+		if line == "noop" {
+			screen += draw(x, cycle)
+			cycle += 1
+
+		} else { // it's an add operation
+			addVal, err := strconv.Atoi(strings.Split(line, " ")[1])
+			checkErr(err)
+
+			screen += draw(x, cycle)
+			cycle += 1
+
+			screen += draw(x, cycle)
+			x += addVal
+			cycle += 1
+		}
+	}
+
+	fmt.Println(screen)
+}
+
 func main() {
 	data, err := os.ReadFile("./day10.txt")
 	checkErr(err)
@@ -59,4 +101,5 @@ func main() {
 	lines = lines[:len(lines)-1] // trim empty last line
 
 	fmt.Println("Part 1:", partOne(lines))
+	partTwo(lines)
 }
