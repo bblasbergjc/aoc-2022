@@ -133,30 +133,9 @@ func partOne(monkies map[int]*Monkey) int {
 	return inspections[0] * inspections[1]
 }
 
+// tried to big.Int this :) apparently math is required :(
 func partTwo(monkies map[int]*Monkey) int {
-	inspections := make([]int, len(monkies))
-	for round := 0; round < 10_000; round += 1 {
-		for i := 0; i < len(monkies); i += 1 {
-			monkey := monkies[i]
-
-			for _, worryLevel := range monkey.Items {
-				newWorryLevel := monkey.Operation(worryLevel)
-
-				toMonkey := monkey.Test(newWorryLevel)
-				monkies[toMonkey].Items = append(monkies[toMonkey].Items, newWorryLevel)
-
-				inspections[i] += 1
-			}
-
-			monkey.Items = make([]int, 0)
-		}
-	}
-
-	sort.Sort(sort.Reverse(sort.IntSlice(inspections)))
-
-	fmt.Println(inspections)
-	// multiply hightest 2
-	return inspections[0] * inspections[1]
+	return 0
 }
 
 func main() {
