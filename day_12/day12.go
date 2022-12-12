@@ -26,10 +26,10 @@ type Point struct {
 	Val rune
 }
 
-// builds the grid and returns the starting and ending points
-func buildGrid(lines []string) ([][]rune, Point, Point) {
+// builds the grid and returns the starting point and all 'a' points
+func buildGrid(lines []string) ([][]rune, Point, []Point) {
 	var start Point
-	var end Point
+	var aPoints []Point
 	grid := make([][]rune, len(lines))
 	for row, line := range lines {
 		heights := make([]rune, len(line))
@@ -38,14 +38,15 @@ func buildGrid(lines []string) ([][]rune, Point, Point) {
 
 			if ch == 'S' {
 				start = Point{row, col, ch}
-			} else if ch == 'E' {
-				end = Point{row, col, ch}
+				aPoints = append(aPoints, start)
+			} else if ch == 'a' {
+				aPoints = append(aPoints, Point{row, col, ch})
 			}
 		}
 		grid[row] = heights
 	}
 
-	return grid, start, end
+	return grid, start, aPoints
 }
 
 func getPoint(grid [][]rune, row int, col int) *Point {
@@ -115,7 +116,7 @@ func validMoves(grid [][]rune, start Point, visited [][]bool) []Point {
 	return validMoves
 }
 
-func bfs(grid [][]rune, start Point, end Point) int {
+func bfs(grid [][]rune, starts []Point) int {
 	queue := make([]Point, 0)
 	visited := make([][]bool, len(grid))
 	for row := 0; row < len(grid); row += 1 {
@@ -126,7 +127,7 @@ func bfs(grid [][]rune, start Point, end Point) int {
 	}
 
 	queueConents := make(map[Point]bool)
-	queue = append(queue, start)
+	queue = append(queue, starts...)
 	depth := 0
 	for len(queue) > 0 {
 		childNodesSize := len(queue)
@@ -176,8 +177,12 @@ func bfs(grid [][]rune, start Point, end Point) int {
 	return depth
 }
 
-func partOne(grid [][]rune, start Point, end Point) int {
-	return bfs(grid, start, end)
+func partOne(grid [][]rune, start Point) int {
+	return bfs(grid, []Point{start})
+}
+
+func partTwo(grid [][]rune, starts []Point) int {
+	return bfs(grid, starts)
 }
 
 func main() {
@@ -186,7 +191,9 @@ func main() {
 	lines := strings.Split(string(data), "\n")
 	lines = lines[:len(lines)-1] // trim empty last line
 
-	grid, start, end := buildGrid(lines)
+	grid, start, aPoints := buildGrid(lines)
 
-	fmt.Println("Part 1:", partOne(grid, start, end))
+	fmt.Println("Part 1:", partOne(grid, start))
+	fmt.Println("Part 2:", partTwo(grid, aPoints))
+
 }
