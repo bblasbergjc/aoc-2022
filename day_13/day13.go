@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -14,15 +15,21 @@ func checkErr(err error) {
 }
 
 const (
-	KeepGoing = iota
-	InOrder
-	OutOfOrder
+	KeepGoing  = 0
+	InOrder    = 1
+	OutOfOrder = -1
 )
 
 type NumberOrList struct {
 	Number *int
 	List   *[]NumberOrList
 }
+
+type SortablePackets [][]NumberOrList
+
+func (a SortablePackets) Len() int           { return len(a) }
+func (a SortablePackets) Less(i, j int) bool { return compare(Pair{a[i], a[j]}) }
+func (a SortablePackets) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 func (n *NumberOrList) ToString() string {
 	if n.Number != nil {
@@ -159,11 +166,9 @@ func compare(p Pair) bool {
 	compareFunc = func(pair Pair, depth int) int {
 		left := pair.Left
 		right := pair.Right
-		printCompare(depth, stringAll(left), stringAll(right))
 
 		for i := range left {
 			if i == len(right) { // right ran out of inputs
-				fmt.Print("Right ran out of items ")
 				return OutOfOrder
 			}
 
@@ -171,8 +176,6 @@ func compare(p Pair) bool {
 			r := right[i]
 
 			if l.Number != nil && r.Number != nil { //both integers
-				printCompare(depth+1, l.ToString(), r.ToString())
-
 				if *l.Number == *r.Number {
 					continue // keep going
 				}
@@ -214,7 +217,6 @@ func compare(p Pair) bool {
 		}
 
 		if len(left) < len(right) {
-			fmt.Print("Left ran out of items ")
 			return InOrder
 		} else {
 			return KeepGoing
@@ -223,18 +225,14 @@ func compare(p Pair) bool {
 
 	res := compareFunc(p, 0)
 
-	if res == InOrder {
-		fmt.Println("IN order")
-	} else if res == OutOfOrder {
-		fmt.Println("OUT of order")
-	} else {
-		fmt.Println("KEEP GOING - so , yes in order")
-	}
-
 	return res != OutOfOrder
 }
 
-func partOne(pairs []Pair) int {
+func partOne() int {
+	lines := parseLines()
+	lines = append(lines, "[[6]]", "[[2]]", "")
+	pairs := parseInput(lines)
+
 	sum := 0
 
 	for i, pair := range pairs {
@@ -243,6 +241,48 @@ func partOne(pairs []Pair) int {
 		}
 	}
 	return sum
+}
+
+func partTwo() int {
+	lines := parseLines()
+	lines = append(lines, "[[6]]", "[[2]]", "")
+	pairs := parseInput(lines)
+
+	all := make([][]NumberOrList, 0)
+
+	for i := 0; i < len(pairs); i += 1 {
+		all = append(all, pairs[i].Left)
+		all = append(all, pairs[i].Right)
+	}
+
+	sort.Sort(SortablePackets(all))
+
+	// inefficient full scan search
+	findByString := func(str string) int {
+		for i, packet := range all {
+			if stringAll(packet) == str {
+				return i
+			}
+		}
+
+		return -1
+	}
+
+	for _, p := range all {
+		fmt.Println(stringAll(p))
+	}
+
+	i1 := findByString("[[2]]") + 1
+	i2 := findByString("[[6]]") + 1
+
+	return i1 * i2
+}
+
+func parseLines() []string {
+	data, err := os.ReadFile("./day13.txt")
+	checkErr(err)
+	lines := strings.Split(string(data), "\n")
+	return lines
 }
 
 func stringAll(items []NumberOrList) string {
@@ -259,18 +299,6 @@ func stringAll(items []NumberOrList) string {
 }
 
 func main() {
-	data, err := os.ReadFile("./day13.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
 
-	pairs := parseInput(lines)
-
-	// // print our input to make sure we read it right
-	// for i := range pairs {
-	// 	fmt.Println(stringAll(pairs[i].Left))
-	// 	fmt.Println(stringAll(pairs[i].Right))
-	// 	fmt.Println()
-	// }
-
-	fmt.Println("Part 1:", partOne(pairs))
+	fmt.Println("Part 2:", partTwo())
 }
