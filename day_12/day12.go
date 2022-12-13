@@ -14,12 +14,6 @@ func checkErr(err error) {
 	}
 }
 
-func ifDebug(action func()) {
-	if debug {
-		action()
-	}
-}
-
 type Point struct {
 	Row int
 	Col int
