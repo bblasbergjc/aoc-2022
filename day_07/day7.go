@@ -3,16 +3,11 @@ package main
 import (
 	"fmt"
 	"math"
-	"os"
 	"strconv"
 	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 type File struct {
 	Name string
@@ -155,7 +150,7 @@ func createFileSys(lines []string) *Directory {
 		} else if lineType == "FILE" {
 			items := strings.Split(line, " ")
 			size, err := strconv.Atoi(items[0])
-			checkErr(err)
+			CheckErr(err)
 
 			pwd.Files = append(pwd.Files, &File{
 				Name: items[1],
@@ -173,10 +168,7 @@ func createFileSys(lines []string) *Directory {
 }
 
 func main() {
-	data, err := os.ReadFile("./day7.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
-
+	lines := ParseLines("./day7.txt")
 	filesys := createFileSys(lines)
 
 	fmt.Println("Part 1: ", partOne(filesys))

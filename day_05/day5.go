@@ -2,16 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 func getInitialStacks() []stack {
 	return []stack{
@@ -44,13 +39,13 @@ func parseLine(line string) (int, int, int) {
 	tokens := strings.Split(line, " ")
 
 	numberToMove, err := strconv.Atoi(tokens[1])
-	checkErr(err)
+	CheckErr(err)
 
 	from, err := strconv.Atoi(tokens[3])
-	checkErr(err)
+	CheckErr(err)
 
 	to, err := strconv.Atoi(tokens[5])
-	checkErr(err)
+	CheckErr(err)
 
 	return numberToMove, from - 1, to - 1
 }
@@ -109,9 +104,7 @@ func partTwo(lines []string) string {
 }
 
 func main() {
-	data, err := os.ReadFile("./day5.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
+	lines := ParseLines("./day5.txt")
 
 	fmt.Println("Part 1: ", partOne(lines))
 	fmt.Println("Part 2: ", partTwo(lines))

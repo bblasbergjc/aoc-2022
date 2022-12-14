@@ -2,18 +2,13 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
+
+	. "github.com/bblasbergjc/aoc-2022/util"
 )
 
 const debug = false
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
 
 type Position struct {
 	X int
@@ -27,7 +22,7 @@ func newPosition() Position {
 func parseLine(line string) (string, int) {
 	parts := strings.Split(line, " ")
 	moveNum, err := strconv.Atoi(parts[1])
-	checkErr(err)
+	CheckErr(err)
 
 	return parts[0], moveNum
 }
@@ -178,9 +173,7 @@ func partTwo(lines []string) int {
 }
 
 func main() {
-	data, err := os.ReadFile("./day9.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
+	lines := ParseLinesWithoutEndNewLine("./day9.txt")
 
 	fmt.Println("Part 1:", partOne(lines))
 	fmt.Println("Part 2:", partTwo(lines))

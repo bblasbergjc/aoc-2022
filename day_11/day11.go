@@ -2,17 +2,12 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 type operation func(old int) int
 
@@ -37,7 +32,7 @@ func parseOperation(operation string) operation {
 	op := parts[1]
 	rawNum := parts[2]
 	num, err := strconv.Atoi(rawNum)
-	checkErr(err)
+	CheckErr(err)
 
 	if op == "+" {
 		return func(old int) int {
@@ -55,7 +50,7 @@ func parseLastNumber(line string) int {
 	rawNum := parts[len(parts)-1]
 
 	num, err := strconv.Atoi(rawNum)
-	checkErr(err)
+	CheckErr(err)
 
 	return num
 }
@@ -73,7 +68,7 @@ func parseMonkeys(lines []string) map[int]*Monkey {
 			items := make([]int, 0)
 			for _, item := range strings.Split(itemsRaw, ", ") {
 				num, err := strconv.Atoi(item)
-				checkErr(err)
+				CheckErr(err)
 
 				items = append(items, num)
 			}
@@ -139,10 +134,7 @@ func partTwo(monkies map[int]*Monkey) int {
 }
 
 func main() {
-	data, err := os.ReadFile("./day11.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
-	lines = lines[:len(lines)-1] // trim empty last line
+	lines := ParseLinesWithoutEndNewLine("./day11.txt") // trim empty last line
 
 	monkies := parseMonkeys(lines)
 

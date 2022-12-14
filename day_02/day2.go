@@ -2,15 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 var pointsMap = map[string]int{
 	"A": 1,
@@ -111,9 +106,7 @@ func partTwo(lines []string) int {
 }
 
 func main() {
-	data, err := os.ReadFile("./day2.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
+	lines := ParseLines("./day2.txt")
 
 	fmt.Printf("Total Score: %d\n", partOne(lines))
 	fmt.Printf("Total Score: %d\n", partTwo(lines))

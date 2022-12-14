@@ -2,16 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 func readSignalStrength(x, strengthCheckCycle, totalSignalStrengths int) (int, int) {
 	totalSignalStrengths += (x * strengthCheckCycle)
@@ -34,7 +29,7 @@ func partOne(lines []string) int {
 			}
 		} else { // it's an add operation
 			addVal, err := strconv.Atoi(strings.Split(line, " ")[1])
-			checkErr(err)
+			CheckErr(err)
 
 			// if this add wont go through before we need to check signal strength, do it now
 			if cycle+2 > strengthCheckCycle {
@@ -80,7 +75,7 @@ func partTwo(lines []string) {
 
 		} else { // it's an add operation
 			addVal, err := strconv.Atoi(strings.Split(line, " ")[1])
-			checkErr(err)
+			CheckErr(err)
 
 			screen += draw(x, cycle)
 			cycle += 1
@@ -95,10 +90,7 @@ func partTwo(lines []string) {
 }
 
 func main() {
-	data, err := os.ReadFile("./day10.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
-	lines = lines[:len(lines)-1] // trim empty last line
+	lines := ParseLinesWithoutEndNewLine("./day10.txt") // trim empty last line
 
 	fmt.Println("Part 1:", partOne(lines))
 	partTwo(lines)

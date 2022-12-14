@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bblasbergjc/aoc-2022/util"
+	. "github.com/bblasbergjc/aoc-2022/util"
 )
 
 var startingPoint = Point{500, 0}
@@ -112,10 +112,10 @@ func parsePoint(raw string) Point {
 	coords := strings.Split(raw, ",")
 
 	x, err := strconv.Atoi(coords[0])
-	util.CheckErr(err)
+	CheckErr(err)
 
 	y, err := strconv.Atoi(coords[1])
-	util.CheckErr(err)
+	CheckErr(err)
 
 	return Point{x, y}
 }
@@ -248,7 +248,7 @@ func partTwo(cave Cave) int {
 }
 
 func main() {
-	lines := util.ParseLinesWithoutEndNewLine("./day14.txt")
+	lines := ParseLinesWithoutEndNewLine("./day14.txt")
 	cave := parseCave(lines)
 	answer := partOne(cave)
 

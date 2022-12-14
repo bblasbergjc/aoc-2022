@@ -2,17 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strings"
+
+	. "github.com/bblasbergjc/aoc-2022/util"
 )
 
 const debug = false
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
 
 type Point struct {
 	Row int
@@ -180,10 +174,7 @@ func partTwo(grid [][]rune, starts []Point) int {
 }
 
 func main() {
-	data, err := os.ReadFile("./day12.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
-	lines = lines[:len(lines)-1] // trim empty last line
+	lines := ParseLinesWithoutEndNewLine("./day12.txt")
 
 	grid, start, aPoints := buildGrid(lines)
 

@@ -3,16 +3,10 @@ package main
 import (
 	"container/heap"
 	"fmt"
-	"os"
 	"strconv"
-	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 func max(a, b int) int {
 	if a > b {
@@ -22,19 +16,16 @@ func max(a, b int) int {
 	return b
 }
 
-func partOne() int {
-	data, err := os.ReadFile("./day1.txt")
-	checkErr(err)
-
+func partOne(lines []string) int {
 	maxCalories := 0
 	currentCalories := 0
-	for _, line := range strings.Split(string(data), "\n") {
+	for _, line := range lines {
 		if line == "" {
 			maxCalories = max(maxCalories, currentCalories)
 			currentCalories = 0
 		} else {
 			cals, err := strconv.ParseInt(line, 10, 64)
-			checkErr(err)
+			CheckErr(err)
 
 			currentCalories += int(cals)
 		}
@@ -64,14 +55,11 @@ func (h *IntHeap) Pop() any {
 	return x
 }
 
-func partTwo() int {
-	data, err := os.ReadFile("./day1.txt")
-	checkErr(err)
-
+func partTwo(lines []string) int {
 	h := &IntHeap{0, 0, 0}
 	heap.Init(h)
 	currentCalories := 0
-	for _, line := range strings.Split(string(data), "\n") {
+	for _, line := range lines {
 		if line == "" {
 			if currentCalories > (*h)[0] { // if this value is less than the smallest in our heap
 				heap.Pop(h)
@@ -80,7 +68,7 @@ func partTwo() int {
 			currentCalories = 0
 		} else {
 			cals, err := strconv.ParseInt(line, 10, 64)
-			checkErr(err)
+			CheckErr(err)
 
 			currentCalories += int(cals)
 		}
@@ -96,6 +84,7 @@ func partTwo() int {
 }
 
 func main() {
+	lines := ParseLines("./day1.txt")
 
-	fmt.Printf("Top three calories sum: %d\n", partTwo())
+	fmt.Printf("Top three calories sum: %d\n", partTwo(lines))
 }

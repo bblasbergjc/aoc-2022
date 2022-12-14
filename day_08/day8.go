@@ -2,16 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
-	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 func scenicScore(grid [][]int, row int, col int) int {
 	treeHeight := grid[row][col]
@@ -154,22 +148,17 @@ func partTwo(grid [][]int) int {
 }
 
 func main() {
-	data, err := os.ReadFile("./day8.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
+	lines := ParseLinesWithoutEndNewLine("./day8.txt")
 
 	rows := make([][]int, 0)
 
 	// parse the grid of trees
 	for _, line := range lines {
-		if line == "" {
-			break
-		}
 		cols := make([]int, 0)
 
 		for i := range line {
 			height, err := strconv.Atoi(string(line[i]))
-			checkErr(err)
+			CheckErr(err)
 
 			cols = append(cols, height)
 		}

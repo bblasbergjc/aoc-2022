@@ -3,13 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 func partOne(line string) int {
 	charCount := make(map[rune]int)
@@ -107,7 +103,7 @@ func partTwo(line string) int {
 
 func main() {
 	data, err := os.ReadFile("./day6.txt")
-	checkErr(err)
+	CheckErr(err)
 
 	line := string(data)
 

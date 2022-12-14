@@ -2,17 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"sort"
 	"strconv"
-	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 const (
 	KeepGoing  = 0
@@ -103,7 +97,7 @@ func parseInput(lines []string) []Pair {
 			} else if ch == ']' {
 				if rawNum != "" {
 					num, err := strconv.Atoi(rawNum)
-					checkErr(err)
+					CheckErr(err)
 
 					packet := NumberOrList{&num, nil}
 
@@ -120,7 +114,7 @@ func parseInput(lines []string) []Pair {
 			} else if ch == ',' {
 				if rawNum != "" {
 					num, err := strconv.Atoi(rawNum)
-					checkErr(err)
+					CheckErr(err)
 
 					packet := NumberOrList{&num, nil}
 
@@ -139,7 +133,7 @@ func parseInput(lines []string) []Pair {
 
 		if rawNum != "" { //ended on a number
 			num, err := strconv.Atoi(rawNum)
-			checkErr(err)
+			CheckErr(err)
 
 			packet := NumberOrList{&num, nil}
 
@@ -279,10 +273,7 @@ func partTwo() int {
 }
 
 func parseLines() []string {
-	data, err := os.ReadFile("./day13.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
-	return lines
+	return ParseLines("./day13.txt")
 }
 
 func stringAll(items []NumberOrList) string {
@@ -299,6 +290,5 @@ func stringAll(items []NumberOrList) string {
 }
 
 func main() {
-
 	fmt.Println("Part 2:", partTwo())
 }

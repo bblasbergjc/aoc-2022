@@ -2,16 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 type Range struct {
 	Low  int
@@ -26,10 +21,10 @@ func getRanges(line string) (Range, Range) {
 
 	createRange := func(vals []string) Range {
 		low, err := strconv.Atoi(vals[0])
-		checkErr(err)
+		CheckErr(err)
 
 		high, err := strconv.Atoi(vals[1])
-		checkErr(err)
+		CheckErr(err)
 		return Range{
 			Low:  low,
 			High: high,
@@ -43,9 +38,6 @@ func getRanges(line string) (Range, Range) {
 func partOne(lines []string) int {
 	totalOverlapping := 0
 	for _, line := range lines {
-		if line == "" {
-			break
-		}
 
 		left, right := getRanges(line)
 
@@ -62,9 +54,6 @@ func partOne(lines []string) int {
 func partTwo(lines []string) int {
 	totalOverlapping := 0
 	for _, line := range lines {
-		if line == "" {
-			break
-		}
 
 		left, right := getRanges(line)
 		if left.High >= right.Low && left.High <= right.High {
@@ -81,9 +70,7 @@ func partTwo(lines []string) int {
 }
 
 func main() {
-	data, err := os.ReadFile("./day4.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
+	lines := ParseLinesWithoutEndNewLine("./day4.txt")
 
 	fmt.Println("Part 1: ", partOne(lines))
 	fmt.Println("Part 2: ", partTwo(lines))

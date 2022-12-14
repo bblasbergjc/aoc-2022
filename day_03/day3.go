@@ -2,15 +2,9 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strings"
-)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+	. "github.com/bblasbergjc/aoc-2022/util"
+)
 
 var priorities map[byte]int
 
@@ -90,9 +84,7 @@ func partTwo(lines []string) int {
 	return total
 }
 func main() {
-	data, err := os.ReadFile("./day3.txt")
-	checkErr(err)
-	lines := strings.Split(string(data), "\n")
+	lines := ParseLines("./day3.txt")
 
 	fmt.Println("Part 1: ", partOne(lines))
 	fmt.Println("Part 2: ", partTwo(lines))
