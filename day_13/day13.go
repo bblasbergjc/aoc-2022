@@ -216,7 +216,7 @@ func compare(p Pair) bool {
 			}
 		}
 
-		if len(left) < len(right) {
+		if len(left) < len(right) { //left ran out of inputs
 			return InOrder
 		} else {
 			return KeepGoing
