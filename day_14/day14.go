@@ -200,7 +200,6 @@ func nextMove(p Point, r Cave) (Point, bool) {
 func partOne(cave Cave) int {
 	sandUnits := 0
 
-	fmt.Println("MaxY", cave.maxY, "minx", cave.edges.low, "maxx", cave.edges.high)
 	for {
 		sandUnits += 1
 		prevPoint := startingPoint
@@ -216,7 +215,6 @@ func partOne(cave Cave) int {
 			// and get the next piece of sand
 			if !ok {
 				cave.AddSand(prevPoint)
-				prevPoint = startingPoint
 				break
 			}
 
@@ -228,7 +226,6 @@ func partOne(cave Cave) int {
 func partTwo(cave Cave) int {
 	sandUnits := 0
 
-	fmt.Println("MaxY", cave.maxY, "minx", cave.edges.low, "maxx", cave.edges.high)
 	for {
 		sandUnits += 1
 		prevPoint := startingPoint
