@@ -9,6 +9,8 @@ import (
 	"github.com/bblasbergjc/aoc-2022/util"
 )
 
+var startingPoint = Point{500, 0}
+
 type Point struct {
 	x int
 	y int
@@ -33,7 +35,7 @@ type Cave struct {
 }
 
 func (c *Cave) Print() {
-	for y := 0; y <= c.maxY; y += 1 {
+	for y := 0; y <= c.maxY+2; y += 1 {
 		for x := c.edges.low - 1; x <= c.edges.high+1; x += 1 {
 			if c.HasRock(Point{x, y}) {
 				fmt.Print("#")
@@ -55,6 +57,14 @@ func (c *Cave) AddSand(p Point) {
 		y[p.y] = struct{}{}
 		c.sand[p.x] = y
 	}
+
+	if p.x < c.edges.low {
+		c.edges.low = p.x
+	}
+
+	if p.x > c.edges.high {
+		c.edges.high = p.x
+	}
 }
 
 func (c *Cave) HasSand(p Point) bool {
@@ -67,6 +77,10 @@ func (c *Cave) HasSand(p Point) bool {
 }
 
 func (c *Cave) HasRock(p Point) bool {
+	if p.y == c.maxY+2 {
+		return true
+	}
+
 	if ranges, ok := c.x[p.x]; ok {
 		for _, r := range ranges {
 			if r.InRange(p.y) {
@@ -189,9 +203,11 @@ func partOne(cave Cave) int {
 	fmt.Println("MaxY", cave.maxY, "minx", cave.edges.low, "maxx", cave.edges.high)
 	for {
 		sandUnits += 1
-		prevPoint := Point{500, 0}
+		prevPoint := startingPoint
 		for {
 			currentPoint, ok := nextMove(prevPoint, cave)
+
+			// if this point is lower (higher y value) than the lowest rock, its in the abyss
 			if cave.IsInAbyss(currentPoint) {
 				return sandUnits - 1
 			}
@@ -200,7 +216,32 @@ func partOne(cave Cave) int {
 			// and get the next piece of sand
 			if !ok {
 				cave.AddSand(prevPoint)
-				prevPoint = Point{500, 0}
+				prevPoint = startingPoint
+				break
+			}
+
+			prevPoint = currentPoint
+		}
+	}
+}
+
+func partTwo(cave Cave) int {
+	sandUnits := 0
+
+	fmt.Println("MaxY", cave.maxY, "minx", cave.edges.low, "maxx", cave.edges.high)
+	for {
+		sandUnits += 1
+		prevPoint := startingPoint
+		for {
+			currentPoint, ok := nextMove(prevPoint, cave)
+
+			// if we are out of moves, add the sand to the cave
+			// and get the next piece of sand
+			if !ok {
+				cave.AddSand(prevPoint)
+				if prevPoint == startingPoint {
+					return sandUnits
+				}
 				break
 			}
 
@@ -213,6 +254,12 @@ func main() {
 	lines := util.ParseLinesWithoutEndNewLine("./day14.txt")
 	cave := parseCave(lines)
 	answer := partOne(cave)
+
+	cave = parseCave(lines)
+	answer2 := partTwo(cave)
 	cave.Print()
+
 	fmt.Println("part 1:", answer)
+	fmt.Println("part 2:", answer2)
+
 }
