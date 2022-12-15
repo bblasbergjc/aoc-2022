@@ -59,6 +59,23 @@ func (p Point) Distance(o Point) int {
 type Sensor struct {
 	Point          Point
 	BeaconDistance int
+	XRanges        map[int]Range // map of y level and the x ranges of their search
+}
+
+func calcXRanges(sensor Sensor) map[int]Range {
+	xranges := make(map[int]Range)
+
+	// start at the top of the sensor range and work our way down to the bottom
+	for y := sensor.Point.Y - sensor.BeaconDistance; y <= sensor.Point.Y+sensor.BeaconDistance; y += 1 {
+		width := sensor.BeaconDistance - Abs(y, sensor.Point.Y)
+
+		xranges[y] = Range{
+			Low:  sensor.Point.X - width,
+			High: sensor.Point.X + width,
+		}
+	}
+
+	return xranges
 }
 
 func parseInt(str string) int {
@@ -101,10 +118,14 @@ func parseInput(lines []string) *Data {
 		yRange.MinMax(sensor.Y)
 		yRange.MinMax(beacon.Y)
 
-		sensors = append(sensors, Sensor{
+		sensorItem := Sensor{
 			Point:          sensor,
 			BeaconDistance: sensor.Distance(beacon),
-		})
+		}
+
+		sensorItem.XRanges = calcXRanges(sensorItem)
+
+		sensors = append(sensors, sensorItem)
 		beacons = append(beacons, beacon)
 
 		if sensor.Distance(beacon) > greatestDistance {
@@ -172,45 +193,30 @@ func partOne(data *Data, y int) int {
 
 const tuningMultiplier = 4_000_000
 
-func searchForFreeSpace(id int, data *Data, xRange Range, yRange Range, found chan int) {
-	fmt.Printf("[%d] Starting search for x[%d,%d] and y[%d,%d]\n", id, xRange.Low, xRange.High, yRange.Low, yRange.High)
-
-	count := 1
-	tenths := 0
-	for x := xRange.Low; x <= xRange.High; x += 1 {
-		for y := yRange.Low; y <= yRange.High; y += 1 {
-
-			if count%5_000_000_000 == 0 {
-				tenths += 1
-				fmt.Printf("[%d] has processed %d/10th of its workload\n", id, tenths)
-			}
-
-			if isFreeSpace(data, x, y, false) {
-				print("x:", x, "y:", y)
-				found <- (tuningMultiplier * x) + y
-			}
-
-			count += 1
-		}
-	}
-}
-
+// Had to read this answer: https://www.reddit.com/r/adventofcode/comments/zmcn64/comment/j0d6du6/?utm_source=share&utm_medium=web2x&context=3
+// to understand how to do this
+// It's still slow, but possible without a government level super computer :)
 func partTwo(data *Data, max int) int {
-	step := max / 320
+	for y := 0; y < max; y += 1 {
+		for _, sensor := range data.Sensors {
+			// check the square just left of the range
+			leftCol := sensor.XRanges[y].Low - 1
+			if leftCol > 0 && leftCol < max && isFreeSpace(data, leftCol, y, false) {
+				fmt.Println("x:", leftCol, "y:", y)
+				return (leftCol * tuningMultiplier) + y
+			}
 
-	id := 0
-	found := make(chan int)
-	for i := 0; i < max; i += step {
-		go searchForFreeSpace(id, data, Range{Low: i, High: i + step}, Range{Low: 0, High: max}, found)
-		id += 1
+			// check the square just right of the range
+			rightCol := sensor.XRanges[y].High + 1
+			if rightCol > 0 && rightCol < max && isFreeSpace(data, rightCol, y, false) {
+				fmt.Println("x:", rightCol, "y:", y)
+				return (rightCol * tuningMultiplier) + y
+			}
+		}
+
 	}
 
-	total := int64(max) * int64(max)
-	fmt.Println("Total to process:", total)
-
-	answer := <-found
-
-	return answer
+	return -1
 }
 
 func main() {
@@ -234,5 +240,5 @@ func main() {
 	// }
 
 	//fmt.Println("Part 1:", partOne(sensors, beacons, xRange, yRange, 2000000))
-	fmt.Println("Part 2:", partTwo(data, 4000000))
+	fmt.Println("Part 2:", partTwo(data, 4_000_000))
 }
